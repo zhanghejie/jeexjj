@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xjj.sec.dao.RolePrivilegeDao">
+	<select id="getById" resultType="RolePrivilegeEntity" parameterType="long">
+		SELECT
+			*
+		FROM
+			t_sec_role_privilege
+		WHERE
+			id = #{id}
+	</select>
+	<select id="getByRolePri" resultType="RolePrivilegeEntity">
+		SELECT
+			*
+		FROM
+			t_sec_role_privilege
+		WHERE
+			role_id = #{roleId} and PRIVILEGE_CODE=#{pcode}
+	</select>
+	<select id="findPage" resultType="RolePrivilegeEntity">
+		SELECT
+			*
+		FROM
+			t_sec_role_privilege
+		<include refid="com.xjj.framework.dao.CommonDao.queryParam"/>
+		<include refid="com.xjj.framework.dao.CommonDao.queryOrder"/>
+		LIMIT #{offset}, #{limit}
+	</select>
+	
+	<select id="findAll" resultType="RolePrivilegeEntity">
+		SELECT * FROM t_sec_role_privilege
+	</select>
+	
+	<insert id="save" useGeneratedKeys="true" keyProperty="id" parameterType="com.xjj.sec.entity.RolePrivilegeEntity">
+		insert into t_sec_role_privilege(ID,ROLE_ID,PRIVILEGE_TITLE,PRIVILEGE_CODE,FUNCTION_LIST)
+    	values(#{id},#{roleId},#{privilegeTitle},#{privilegeCode},#{functionList})
+	</insert>
+	
+	<update id="update" parameterType="RolePrivilegeEntity">  
+        UPDATE t_sec_role_privilege SET 
+             ID = #{id},
+             ROLE_ID = #{roleId},
+             PRIVILEGE_TITLE = #{privilegeTitle},
+             PRIVILEGE_CODE = #{privilegeCode},
+             FUNCTION_LIST = #{functionList}
+        WHERE id = #{id};     
+	</update>
+		
+	<delete id="delete" parameterType="long">  
+        DELETE FROM t_sec_role_privilege WHERE id = #{id}  
+	</delete> 
+	
+	<select id="getCount" resultType="java.lang.Integer">         
+    	select count(id) from t_sec_role_privilege 
+    	<include refid="com.xjj.framework.dao.CommonDao.queryParam"/>
+		<include refid="com.xjj.framework.dao.CommonDao.queryOrder"/>
+	</select> 
+	
+	<select id="findList" resultType="RolePrivilegeEntity">         
+    	SELECT * FROM t_sec_role_privilege
+    	<include refid="com.xjj.framework.dao.CommonDao.queryParam"/>
+		<include refid="com.xjj.framework.dao.CommonDao.queryOrder"/>
+	</select> 
+	
+	<select id="findListByColumnValues" resultType="RolePrivilegeEntity">
+		SELECT * FROM t_sec_role_privilege
+		where ${column} in
+        <foreach collection="valArr" index="index" item="item" open="(" separator="," close=")">
+              #{item}       
+        </foreach>    
+	</select>
+	
+	
+	<select id="findListByRoleHasListPri" resultType="RolePrivilegeEntity">
+		SELECT * FROM t_sec_role_privilege
+		where FUNCTION_LIST like '%${listCode}%'
+		and role_id in
+        <foreach collection="roleIds" index="index" item="item" open="(" separator="," close=")">
+              #{item}       
+        </foreach>    
+	</select>
+</mapper>
+

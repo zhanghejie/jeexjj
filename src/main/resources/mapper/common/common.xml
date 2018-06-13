@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xjj.framework.dao.CommonDao">
+	<sql id="queryParam">
+        <foreach collection="query.keys" item="key" open="where"  separator="and">  
+		<if test="'orderBy' != key">  
+			<foreach collection="query[key].keys" item="oper" separator="and">  
+				${key} ${oper} #{query.${key}[${oper}]}
+	        </foreach> 
+		</if>
+        </foreach> 
+	</sql>
+	<sql id="queryOrder">
+		<if test="null != query['orderBy']">   
+	        <foreach collection="query['orderBy'].keys" item="key" open="order by" separator=",">  
+				 ${key} ${query["orderBy"][key]}
+	        </foreach> 
+		</if>
+	</sql>
+	
+	
+	<select id="checkUniqueVal" resultType="java.lang.Integer">         
+    	select count(id) from ${tableName} 
+    	where ${columnName}=#{columnVal}
+    	<if test="null != id">  
+			and and id !=#{id}
+		</if>
+	</select>
+</mapper>

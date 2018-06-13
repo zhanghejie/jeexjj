@@ -1,0 +1,21 @@
+/*
+调试ace相关样式，重新定义覆盖
+*/
+.dataTables_wrapper input[type=search], .dataTables_wrapper input[type=text], .dataTables_wrapper select {
+    margin-bottom: 0!important;
+    margin: 0 0px;
+}
+
+.dataTables_length select {
+    width: 150px;
+    height: 28px;
+    padding: 2px 3px;
+}
+
+.xjj-tab
+{
+    top: -7px;
+    left: 13px;
+    /*font-size: 16px;*/
+    font-family: 'Glyphicons Halflings';
+}

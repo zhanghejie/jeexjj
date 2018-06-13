@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xjj.sys.xfile.dao.XfileDao">
+	<select id="getById" resultType="XfileEntity" parameterType="long">
+		SELECT
+			*
+		FROM
+			t_sys_xfile
+		WHERE
+			id = #{id}
+	</select>
+	
+	<select id="findAll" resultType="XfileEntity">
+		SELECT * FROM t_sys_xfile
+	</select>
+	
+	<insert id="save" useGeneratedKeys="true" keyProperty="id" keyColumn="id" parameterType="com.xjj.sys.xfile.entity.XfileEntity">
+		insert into t_sys_xfile(file_realname,file_path,file_title,url,file_size,user_id,extension_name,is_deleted,create_date)
+    	values(#{fileRealname},#{filePath},#{fileTitle},#{url},#{fileSize},#{userId},#{extensionName},#{isDeleted},#{createDate})
+	</insert>
+	
+	<update id="update" parameterType="XfileEntity">  
+        UPDATE t_sys_xfile SET 
+             id = #{id},
+             file_realname = #{fileRealname},
+             file_path = #{filePath},
+             file_title = #{fileTitle},
+             url = #{url},
+             file_size = #{fileSize},
+             user_id = #{userId},
+             extension_name = #{extensionName},
+             is_deleted = #{isDeleted},
+             create_date = #{createDate}
+        WHERE id = #{id};     
+	</update>
+		
+	<delete id="delete" parameterType="long">  
+        DELETE FROM t_sys_xfile WHERE id = #{id}  
+	</delete> 
+	
+	<select id="getCount" resultType="java.lang.Integer">         
+    	select count(id) from t_sys_xfile 
+    	<include refid="com.xjj.framework.dao.CommonDao.queryParam"/>
+	</select> 
+	
+	<select id="findList" resultType="XfileEntity">
+		SELECT * FROM t_sys_xfile
+		<include refid="com.xjj.framework.dao.CommonDao.queryParam"/>
+		<include refid="com.xjj.framework.dao.CommonDao.queryOrder"/>
+	</select>
+	<select id="findPage" resultType="XfileEntity">
+		SELECT
+			t.*,
+			(select u.user_name from t_sec_user u where u.id=t.user_id) createUserName
+		FROM
+			t_sys_xfile t
+		<include refid="com.xjj.framework.dao.CommonDao.queryParam"/>
+		<include refid="com.xjj.framework.dao.CommonDao.queryOrder"/>
+		LIMIT #{offset}, #{limit}
+	</select>
+	
+	<select id="findListByColumnValues" resultType="XfileEntity">
+		SELECT * FROM t_sys_xfile
+		where ${column} in
+        <foreach collection="valArr" index="index" item="item" open="(" separator="," close=")">
+              #{item}       
+        </foreach>    
+	</select>
+</mapper>

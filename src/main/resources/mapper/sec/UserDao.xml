@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xjj.sec.dao.UserDao">
+	<select id="getById" resultType="XjjUser" parameterType="long">
+		SELECT
+			*
+		FROM
+			t_sec_user
+		WHERE
+			id = #{id}
+	</select>
+	
+	<select id="findAll" resultType="XjjUser">
+		SELECT * FROM t_sec_user
+	</select>
+	
+    <resultMap type="com.xjj.sec.entity.XjjUser" id="userMap">
+        <id column="id" property="id"/>
+        <result column="login_name" property="loginName"/>
+        <result column="password" property="password"/>
+        <result column="user_name" property="userName"/>
+        <result column="mobile" property="mobile"/>
+        <result column="email" property="email"/>
+        <result column="address" property="address"/>
+        <result column="province" property="province"/>
+        <result column="user_type" property="userType"/>
+        <result column="create_date" property="createDate"/>
+        <result column="birthday" property="birthday"/>
+        <result column="status" property="status"/>
+        
+        <collection property="roles" ofType="com.xjj.sec.entity.RoleEntity">
+            <id property="id" column="roleId" javaType="java.lang.Long" />
+            <result property="title" column="title" javaType="java.lang.String" />
+        </collection>
+    </resultMap>
+    
+	<select id="managerPage" resultMap="userMap">
+		SELECT
+			u.*,r.title,r.id roleId
+		FROM
+			t_sec_user u left join t_sec_user_role ur on u.id=ur.user_id left join t_sec_role r on r.id=ur.role_id
+        <foreach collection="query.keys" item="key" open="where"  separator="and">  
+		<if test="'orderBy' != key">  
+			<foreach collection="query[key].keys" item="oper" separator="and">  
+				u.${key} ${oper} #{query.${key}[${oper}]}
+	        </foreach> 
+		</if>
+        </foreach> 
+		<if test="null != query['orderBy']">   
+	        <foreach collection="query['orderBy'].keys" item="key" open="order by" separator=",">  
+				 u.${key} ${query["orderBy"][key]}
+	        </foreach> 
+		</if>
+		LIMIT #{offset}, #{limit}
+	</select>
+	
+	<insert id="save" useGeneratedKeys="true" keyProperty="id" parameterType="com.xjj.sec.entity.XjjUser">
+		insert into t_sec_user(login_name,password,user_name,user_type,email,mobile,create_date,status,birthday,province)
+    	values(#{loginName},#{password},#{userName},#{userType},#{email},#{mobile},#{createDate},#{status},#{birthday},#{province})
+	</insert>
+	
+	<update id="update" parameterType="XjjUser">  
+        UPDATE t_sec_user  
+            SET login_name = #{loginName},   
+                password = #{password},
+                user_name = #{userName},
+                mobile = #{mobile},
+                email = #{email},
+                status = #{status},
+                birthday = #{birthday},
+                address = #{address},
+                province = #{province}
+         WHERE id = #{id};     
+	</update>
+		
+	<delete id="delete" parameterType="long">  
+        DELETE FROM t_sec_user WHERE id = #{id}  
+	</delete> 
+	
+
+	
+	
+	<select id="getCount" resultType="java.lang.Integer">         
+    	select count(id) from t_sec_user u
+    	<include refid="com.xjj.framework.dao.CommonDao.queryParam"/>
+	</select> 
+	
+	<select id="findList" resultType="XjjUser">
+		SELECT
+			u.*
+		FROM
+			t_sec_user u
+        <include refid="com.xjj.framework.dao.CommonDao.queryParam"/>
+		<include refid="com.xjj.framework.dao.CommonDao.queryOrder"/>
+	</select>
+	
+	
+	<select id="findPage" resultType="XjjUser">
+		SELECT
+			u.*
+		FROM
+			t_sec_user u
+        <include refid="com.xjj.framework.dao.CommonDao.queryParam"/>
+		<include refid="com.xjj.framework.dao.CommonDao.queryOrder"/>
+		LIMIT #{offset}, #{limit}
+	</select>
+</mapper>

@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xjj.sec.dao.MenuDao">
+	<select id="getById" resultType="com.xjj.sec.entity.MenuEntity" parameterType="long">
+		SELECT
+			*
+		FROM
+			t_sec_menu
+		WHERE
+			id = #{id}
+	</select>
+	
+	<select id="findAll" resultType="com.xjj.sec.entity.MenuEntity">
+		SELECT * FROM t_sec_menu
+	</select>
+	
+	<select id="findMenusByPid" resultType="com.xjj.sec.entity.MenuEntity" parameterType="long">
+		SELECT
+			*
+		FROM
+			t_sec_menu
+		where 1=1 
+		<if test="pid!=null">
+             and parent_id=#{pid}
+        </if>
+        
+        <if test="pid==null">
+             and parent_id is null
+        </if>
+        order by code asc
+	</select>
+	
+	<select id="findPage" resultType="com.xjj.sec.entity.MenuEntity">
+		SELECT
+			*
+		FROM
+			t_sec_menu
+		<include refid="com.xjj.framework.dao.CommonDao.queryParam"/>
+		<include refid="com.xjj.framework.dao.CommonDao.queryOrder"/>
+		LIMIT #{offset}, #{limit}
+	</select>
+	
+	<insert id="save" useGeneratedKeys="true" keyProperty="id" parameterType="com.xjj.sec.entity.MenuEntity">
+		insert into t_sec_menu(ID,TITLE,DESCRIPTION,PARENT_ID,PRIVILEGE_CODE,URL,order_sn,ICON,status,code)
+    	values(#{id},#{title},#{description},#{parentId},#{privilegeCode},#{url},#{orderSn},#{icon},#{status},#{code})
+	</insert>
+	
+	<update id="update" parameterType="com.xjj.sec.entity.MenuEntity">  
+        UPDATE t_sec_menu SET 
+             ID = #{id},
+             TITLE = #{title},
+             DESCRIPTION = #{description},
+             PARENT_ID = #{parentId},
+             PRIVILEGE_CODE = #{privilegeCode},
+             URL = #{url},
+             order_sn = #{orderSn},
+             ICON = #{icon},
+             status = #{status},
+             code = #{code}
+        WHERE id = #{id};     
+	</update>
+		
+	<delete id="delete" parameterType="long">  
+        DELETE FROM t_sec_menu WHERE id = #{id}  
+	</delete> 
+	
+	<select id="getCount" resultType="java.lang.Integer">         
+    	select count(id) from t_sec_menu 
+    	<include refid="com.xjj.framework.dao.CommonDao.queryParam"/>
+		<include refid="com.xjj.framework.dao.CommonDao.queryOrder"/>
+	</select> 
+	
+	
+	<select id="findList" resultType="com.xjj.sec.entity.MenuEntity">
+		SELECT * FROM t_sec_menu
+		<include refid="com.xjj.framework.dao.CommonDao.queryParam"/>
+		<include refid="com.xjj.framework.dao.CommonDao.queryOrder"/>
+	</select>
+	
+	<select id="findListByColumnValues" resultType="com.xjj.sec.entity.MenuEntity">
+		SELECT * FROM t_sec_menu
+		where ${column} in
+        <foreach collection="valArr" index="index" item="item" open="(" separator="," close=")">
+              #{item}       
+        </foreach>    
+	</select>
+</mapper>
+

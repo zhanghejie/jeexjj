@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE config [
+	<!ELEMENT config (package*)>
+	<!ELEMENT package (property*)>
+	<!ELEMENT property (#PCDATA)>
+	<!ATTLIST package name ID #REQUIRED>
+	<!ATTLIST property name CDATA #REQUIRED>
+]>
+
+<config>
+	<package name="path">
+		<property name="ROOT"></property>
+		<property name="UPLOAD_ROOT"></property>
+	</package>
+
+	<package name="sys">
+		<property name="SERVER_ADDRESS"></property>
+		<property name="URL_ROOT"></property>
+		<property name="LOCALE">zh_CN</property>
+	</package>
+	
+	<package name="action">
+		<property name="DATE_CONVERTER">yyyy-MM-dd</property>
+	</package>
+	
+	<package name="app">
+		<property name="NAME"></property>
+		<property name="CODE"></property>
+	</package>
+    
+    <package name="mail">
+        <property name="MAIL_PORT">25</property>
+        <property name="MAIL_SERVER">smtp.163.com</property>
+        <property name="MAIL_FROM">jlsdzhj@163.com</property>
+        <property name="MAIL_USER">jlsdzhj@163.com</property>
+        <property name="MAIL_PASSWORD">sendmail</property>
+        <property name="MAIL_INTERVAL">1000</property>
+        <property name="MAIL_MAX_SEND_COUNT">1</property>
+        <property name="errorTo"></property>
+        <property name="errorCc"></property>
+    </package>
+</config>
+
+
